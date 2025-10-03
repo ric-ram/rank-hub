@@ -12,7 +12,24 @@ services:
       - 3001:3001
     volumes:
       - ./apps/api:/usr/src/apps/api # for dev hot-reload (remove in prod)
-      - /usr/src/app/node_modules
+      - /usr/src/apps/api/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+  webapp:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: rankhub-webapp
+    env_file:
+      - ./.env
+    environment:
+      NODE_ENV: development
+    ports:
+      - 3000:3000
+    volumes:
+      - ./apps/web:/usr/src/apps/web
+      - /usr/src/apps/web/node_modules
     depends_on:
       db:
         condition: service_healthy
