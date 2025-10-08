@@ -2,8 +2,9 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 
 import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
+import path from 'path';
 
-config();
+config({ path: path.resolve(__dirname, '../../../.env') });
 
 const configService = new ConfigService();
 
@@ -16,7 +17,7 @@ export const dataSourceOptions: DataSourceOptions = {
 	password: configService.getOrThrow<string>('DB_PASSWORD'),
 	database: configService.getOrThrow<string>('DB_NAME'),
 	entities: ['dist/**/*.entity.js'],
-	migrations: ['dist/db/migrations/*.js'],
+	migrations: ['dist/db/migrations/*.ts'],
 	migrationsTableName: 'migrations',
 	migrationsRun: false,
 	synchronize: process.env.ENV !== 'prod',

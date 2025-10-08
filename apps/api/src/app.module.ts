@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from 'db/datasource';
+import { UserAdminModule } from './user-admin/user-admin.module';
 
 @Module({
 	imports: [
@@ -11,6 +12,7 @@ import { dataSourceOptions } from 'db/datasource';
 			isGlobal: true,
 		}),
 		TypeOrmModule.forRoot(dataSourceOptions),
+		UserAdminModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
