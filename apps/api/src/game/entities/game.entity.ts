@@ -5,9 +5,13 @@ import {
 	Index,
 	JoinColumn,
 	ManyToOne,
+	OneToMany,
 	PrimaryGeneratedColumn,
+	RelationId,
 } from 'typeorm';
 
+import { ApiKey } from 'src/api_key/entities/api_key.entity';
+import { Player } from 'src/player/entities/player.entity';
 import { UserAdmin } from 'src/user-admin/entities/user-admin.entity';
 
 @Entity('game')
@@ -23,7 +27,7 @@ export class Game {
 	@Column({ name: 'short_code', nullable: false, unique: true })
 	shortCode: string;
 
-	@Column({ name: 'created_by', type: 'uuid' })
+	@RelationId((game: Game) => game.createdBy)
 	createdById: string;
 
 	@ManyToOne(() => UserAdmin, (admin) => admin.games, {
@@ -39,4 +43,16 @@ export class Game {
 		default: () => 'CURRENT_TIMESTAMP',
 	})
 	createdAt: Date;
+
+	@OneToMany(() => ApiKey, (key) => key.game, {
+		cascade: false,
+		eager: false,
+	})
+	apiKeys: ApiKey[];
+
+	@OneToMany(() => Player, (player) => player.game, {
+		cascade: false,
+		eager: false,
+	})
+	players: Player[];
 }

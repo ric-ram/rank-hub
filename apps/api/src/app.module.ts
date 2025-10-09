@@ -7,6 +7,7 @@ import { dataSourceOptions } from 'db/datasource';
 import { UserAdminModule } from './user-admin/user-admin.module';
 import { GameModule } from './game/game.module';
 import { ApiKeyModule } from './api_key/api_key.module';
+import { PlayerModule } from './player/player.module';
 
 @Module({
 	imports: [
@@ -17,6 +18,7 @@ import { ApiKeyModule } from './api_key/api_key.module';
 		UserAdminModule,
 		GameModule,
 		ApiKeyModule,
+		PlayerModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

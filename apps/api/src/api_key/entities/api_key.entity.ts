@@ -5,19 +5,20 @@ import {
 	JoinColumn,
 	ManyToOne,
 	PrimaryGeneratedColumn,
+	RelationId,
 } from 'typeorm';
 
 import { Game } from 'src/game/entities/game.entity';
 
 @Entity({ name: 'api_key' })
 @Index('idx_api_key_game_active', ['gameId', 'isActive'])
-@Index('uq_api_key_game_hash', ['game_id', 'keyHash'], { unique: true })
+@Index('uq_api_key_game_hash', ['gameId', 'keyHash'], { unique: true })
 export class ApiKey {
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
 
-	@Column({ name: 'game_id', type: 'uuid' })
-	game_id: string;
+	@RelationId((apiKey: ApiKey) => apiKey.game)
+	gameId: string;
 
 	@ManyToOne(() => Game, { onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'game_id', referencedColumnName: 'id' })
