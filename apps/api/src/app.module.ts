@@ -5,6 +5,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from 'db/datasource';
 import { UserAdminModule } from './user-admin/user-admin.module';
+import { GameModule } from './game/game.module';
+import { ApiKeyModule } from './api_key/api_key.module';
 
 @Module({
 	imports: [
@@ -13,6 +15,8 @@ import { UserAdminModule } from './user-admin/user-admin.module';
 		}),
 		TypeOrmModule.forRoot(dataSourceOptions),
 		UserAdminModule,
+		GameModule,
+		ApiKeyModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
