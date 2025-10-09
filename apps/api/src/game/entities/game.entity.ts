@@ -15,7 +15,7 @@ import { Player } from 'src/player/entities/player.entity';
 import { UserAdmin } from 'src/user-admin/entities/user-admin.entity';
 
 @Entity('game')
-@Index('idx_game_created_by', ['createdById'])
+@Index('idx_game_created_by', ['createdBy'])
 @Index('uq_game_short_code', ['shortCode'], { unique: true })
 export class Game {
 	@PrimaryGeneratedColumn('uuid')

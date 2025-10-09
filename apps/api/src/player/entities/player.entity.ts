@@ -13,7 +13,7 @@ import { Game } from 'src/game/entities/game.entity';
 import { Score } from 'src/score/entities/score.entity';
 
 @Entity({ name: 'player' })
-@Index('uq_player_game_user', ['gameId', 'username'], { unique: true })
+@Index('uq_player_game_user', ['game', 'username'], { unique: true })
 export class Player {
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
