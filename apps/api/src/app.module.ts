@@ -10,6 +10,7 @@ import { ApiKeyModule } from './api_key/api_key.module';
 import { PlayerModule } from './player/player.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { ScoreModule } from './score/score.module';
+import { LeaderboardEntryModule } from './leaderboard_entry/leaderboard_entry.module';
 
 @Module({
 	imports: [
@@ -23,6 +24,7 @@ import { ScoreModule } from './score/score.module';
 		PlayerModule,
 		LeaderboardModule,
 		ScoreModule,
+		LeaderboardEntryModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

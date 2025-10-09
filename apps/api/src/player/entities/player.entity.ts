@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 
 import { Game } from 'src/game/entities/game.entity';
+import { LeaderboardEntry } from 'src/leaderboard_entry/entities/leaderboard_entry.entity';
 import { Score } from 'src/score/entities/score.entity';
 
 @Entity({ name: 'player' })
@@ -51,4 +52,7 @@ export class Player {
 		eager: false,
 	})
 	scores: Score[];
+
+	@OneToMany(() => LeaderboardEntry, (e) => e.player)
+	leaderboardEntries: LeaderboardEntry[];
 }
