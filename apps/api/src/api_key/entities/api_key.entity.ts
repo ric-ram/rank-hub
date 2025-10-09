@@ -11,7 +11,7 @@ import {
 import { Game } from 'src/game/entities/game.entity';
 
 @Entity({ name: 'api_key' })
-@Index('idx_api_key_game_active', ['gameId', 'isActive'])
+@Index('idx_api_key_game_active', ['gameId'], { where: `"is_active" = true` })
 @Index('uq_api_key_game_hash', ['gameId', 'keyHash'], { unique: true })
 export class ApiKey {
 	@PrimaryGeneratedColumn('uuid')

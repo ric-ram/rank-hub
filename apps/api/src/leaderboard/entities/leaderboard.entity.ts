@@ -3,11 +3,13 @@ import {
 	Entity,
 	JoinColumn,
 	ManyToOne,
+	OneToMany,
 	PrimaryGeneratedColumn,
 	RelationId,
 } from 'typeorm';
 
 import { Game } from 'src/game/entities/game.entity';
+import { Score } from 'src/score/entities/score.entity';
 
 @Entity({ name: 'leaderboard' })
 export class Leaderboard {
@@ -44,4 +46,10 @@ export class Leaderboard {
 		default: 'now()',
 	})
 	createdAt: Date;
+
+	@OneToMany(() => Score, (score) => score.leaderboard, {
+		cascade: false,
+		eager: false,
+	})
+	scores: Score[];
 }

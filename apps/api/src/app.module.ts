@@ -9,6 +9,7 @@ import { GameModule } from './game/game.module';
 import { ApiKeyModule } from './api_key/api_key.module';
 import { PlayerModule } from './player/player.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { ScoreModule } from './score/score.module';
 
 @Module({
 	imports: [
@@ -21,6 +22,7 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
 		ApiKeyModule,
 		PlayerModule,
 		LeaderboardModule,
+		ScoreModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
