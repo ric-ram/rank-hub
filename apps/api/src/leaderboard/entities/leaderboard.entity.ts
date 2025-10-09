@@ -1,7 +1,6 @@
 import {
 	Column,
 	Entity,
-	Index,
 	JoinColumn,
 	ManyToOne,
 	PrimaryGeneratedColumn,
@@ -10,32 +9,34 @@ import {
 
 import { Game } from 'src/game/entities/game.entity';
 
-@Entity({ name: 'player' })
-@Index('uq_player_game_user', ['gameId', 'username'], { unique: true })
-export class Player {
+@Entity({ name: 'leaderboard' })
+export class Leaderboard {
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
 
-	@RelationId((player: Player) => player.game)
+	@RelationId((leaderboard: Leaderboard) => leaderboard.game)
 	gameId: string;
 
 	@ManyToOne(() => Game, { onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'game_id', referencedColumnName: 'id' })
 	game: Game;
 
-	@Column({ name: 'username', type: 'text', nullable: false })
-	username: string;
+	@Column({ name: 'name', type: 'text', nullable: false })
+	name: string;
 
-	@Column({ name: 'email', type: 'text', nullable: true })
-	email?: string;
+	@Column({ name: 'metric_type', type: 'text', nullable: false })
+	metricType: string;
+
+	@Column({ name: 'order_dir', type: 'text', nullable: false })
+	orderDir: string;
 
 	@Column({
-		name: 'metadata',
-		type: 'jsonb',
+		name: 'is_default',
+		type: 'boolean',
 		nullable: true,
-		default: () => "'{}'",
+		default: true,
 	})
-	metadata?: Record<string, any>;
+	isDefault: boolean;
 
 	@Column({
 		name: 'created_at',
