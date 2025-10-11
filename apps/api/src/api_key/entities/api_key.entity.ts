@@ -5,7 +5,6 @@ import {
 	JoinColumn,
 	ManyToOne,
 	PrimaryGeneratedColumn,
-	RelationId,
 } from 'typeorm';
 
 import { Game } from 'src/game/entities/game.entity';
@@ -17,7 +16,7 @@ export class ApiKey {
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
 
-	@RelationId((apiKey: ApiKey) => apiKey.game)
+	@Column({ name: 'game_id', type: 'uuid', nullable: false })
 	gameId: string;
 
 	@ManyToOne(() => Game, { onDelete: 'CASCADE' })

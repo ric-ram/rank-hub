@@ -11,6 +11,8 @@ import { PlayerModule } from './player/player.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { ScoreModule } from './score/score.module';
 import { LeaderboardEntryModule } from './leaderboard_entry/leaderboard_entry.module';
+import { AchievementModule } from './achievement/achievement.module';
+import { PlayerAchievementModule } from './player_achievement/player_achievement.module';
 
 @Module({
 	imports: [
@@ -25,6 +27,8 @@ import { LeaderboardEntryModule } from './leaderboard_entry/leaderboard_entry.mo
 		LeaderboardModule,
 		ScoreModule,
 		LeaderboardEntryModule,
+		AchievementModule,
+		PlayerAchievementModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

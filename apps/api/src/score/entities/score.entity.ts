@@ -5,7 +5,6 @@ import {
 	JoinColumn,
 	ManyToOne,
 	PrimaryGeneratedColumn,
-	RelationId,
 } from 'typeorm';
 
 import { Leaderboard } from 'src/leaderboard/entities/leaderboard.entity';
@@ -25,14 +24,14 @@ export class Score {
 	@JoinColumn({ name: 'leaderboard_id', referencedColumnName: 'id' })
 	leaderboard: Leaderboard;
 
-	@RelationId((score: Score) => score.leaderboard)
+	@Column({ name: 'leaderboard_id', type: 'uuid', nullable: false })
 	leaderboardId: string;
 
 	@ManyToOne(() => Player, { onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'player_id', referencedColumnName: 'id' })
 	player: Player;
 
-	@RelationId((score: Score) => score.player)
+	@Column({ name: 'player_id', type: 'uuid', nullable: false })
 	playerId: string;
 
 	@Column({ name: 'value', type: 'numeric', precision: 20, scale: 6 })

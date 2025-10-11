@@ -6,11 +6,11 @@ import {
 	ManyToOne,
 	OneToMany,
 	PrimaryGeneratedColumn,
-	RelationId,
 } from 'typeorm';
 
 import { Game } from 'src/game/entities/game.entity';
 import { LeaderboardEntry } from 'src/leaderboard_entry/entities/leaderboard_entry.entity';
+import { PlayerAchievement } from 'src/player_achievement/entities/player_achievement.entity';
 import { Score } from 'src/score/entities/score.entity';
 
 @Entity({ name: 'player' })
@@ -19,7 +19,7 @@ export class Player {
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
 
-	@RelationId((player: Player) => player.game)
+	@Column({ name: 'game_id', type: 'uuid', nullable: false })
 	gameId: string;
 
 	@ManyToOne(() => Game, { onDelete: 'CASCADE' })
@@ -55,4 +55,14 @@ export class Player {
 
 	@OneToMany(() => LeaderboardEntry, (e) => e.player)
 	leaderboardEntries: LeaderboardEntry[];
+
+	@OneToMany(
+		() => PlayerAchievement,
+		(playerAchievement) => playerAchievement.player,
+		{
+			cascade: false,
+			eager: false,
+		},
+	)
+	playerAchievements: PlayerAchievement[];
 }

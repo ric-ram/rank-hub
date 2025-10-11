@@ -6,7 +6,6 @@ import {
 	ManyToOne,
 	OneToOne,
 	PrimaryColumn,
-	RelationId,
 } from 'typeorm';
 
 import { Leaderboard } from 'src/leaderboard/entities/leaderboard.entity';
@@ -40,9 +39,7 @@ export class LeaderboardEntry {
 	@JoinColumn({ name: 'best_score_id' })
 	bestScore: Score;
 
-	@RelationId(
-		(leaderboardEntry: LeaderboardEntry) => leaderboardEntry.bestScore,
-	)
+	@Column({ name: 'best_score_id', type: 'uuid', nullable: false })
 	bestScoreId: string;
 
 	@Column({

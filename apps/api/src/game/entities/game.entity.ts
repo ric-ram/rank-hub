@@ -7,9 +7,9 @@ import {
 	ManyToOne,
 	OneToMany,
 	PrimaryGeneratedColumn,
-	RelationId,
 } from 'typeorm';
 
+import { Achievement } from 'src/achievement/entities/achievement.entity';
 import { ApiKey } from 'src/api_key/entities/api_key.entity';
 import { Player } from 'src/player/entities/player.entity';
 import { UserAdmin } from 'src/user-admin/entities/user-admin.entity';
@@ -27,7 +27,7 @@ export class Game {
 	@Column({ name: 'short_code', nullable: false, unique: true })
 	shortCode: string;
 
-	@RelationId((game: Game) => game.createdBy)
+	@Column({ name: 'created_by', type: 'uuid', nullable: false })
 	createdById: string;
 
 	@ManyToOne(() => UserAdmin, (admin) => admin.games, {
@@ -55,4 +55,10 @@ export class Game {
 		eager: false,
 	})
 	players: Player[];
+
+	@OneToMany(() => Achievement, (achievement) => achievement.game, {
+		cascade: false,
+		eager: false,
+	})
+	achievement: Achievement[];
 }
