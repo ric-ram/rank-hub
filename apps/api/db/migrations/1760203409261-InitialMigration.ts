@@ -23,7 +23,7 @@ export class InitialMigration1760203409261 implements MigrationInterface {
 			`CREATE INDEX "idx_score_desc" ON "score" ("leaderboard_id", "value" DESC) `,
 		);
 		await queryRunner.query(
-			`CREATE TABLE "leaderboard" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "game_id" uuid NOT NULL, "name" text NOT NULL, "metric_type" text NOT NULL, "order_dir" text NOT NULL, "is_default" boolean DEFAULT true, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT 'now()', CONSTRAINT "PK_76fd1d52cf44d209920f73f4608" PRIMARY KEY ("id"))`,
+			`CREATE TABLE "leaderboard" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "game_id" uuid NOT NULL, "name" text NOT NULL, "metric_type" text NOT NULL, "order_dir" text NOT NULL, "is_default" boolean DEFAULT true, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), CONSTRAINT "PK_76fd1d52cf44d209920f73f4608" PRIMARY KEY ("id"))`,
 		);
 		await queryRunner.query(
 			`CREATE TABLE "leaderboard_entry" ("leaderboard_id" uuid NOT NULL, "player_id" uuid NOT NULL, "best_value" numeric(20,6) NOT NULL, "best_score_id" uuid NOT NULL, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "rank" integer, CONSTRAINT "REL_72228ca5b05cdb511458945ae8" UNIQUE ("best_score_id"), CONSTRAINT "PK_8959e6724c1c660753d4f1ab059" PRIMARY KEY ("leaderboard_id", "player_id"))`,
@@ -41,7 +41,7 @@ export class InitialMigration1760203409261 implements MigrationInterface {
 			`CREATE INDEX "idx_leaderboard_entry_value_desc" ON "leaderboard_entry" ("leaderboard_id", "best_value" DESC) `,
 		);
 		await queryRunner.query(
-			`CREATE TABLE "player" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "game_id" uuid NOT NULL, "username" text NOT NULL, "email" text, "metadata" jsonb DEFAULT '{}', "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT 'now()', CONSTRAINT "PK_65edadc946a7faf4b638d5e8885" PRIMARY KEY ("id"))`,
+			`CREATE TABLE "player" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "game_id" uuid NOT NULL, "username" text NOT NULL, "email" text, "metadata" jsonb DEFAULT '{}', "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), CONSTRAINT "PK_65edadc946a7faf4b638d5e8885" PRIMARY KEY ("id"))`,
 		);
 		await queryRunner.query(
 			`CREATE UNIQUE INDEX "uq_player_game_user" ON "player" ("game_id", "username") `,
@@ -71,7 +71,7 @@ export class InitialMigration1760203409261 implements MigrationInterface {
 			`CREATE INDEX "idx_game_achievements" ON "achievement" ("game_id") `,
 		);
 		await queryRunner.query(
-			`CREATE INDEX "idx_achievement_id" ON "achievement" ("game_id", "key") `,
+			`CREATE INDEX "idx_achievement_key_by_game" ON "achievement" ("game_id", "key") `,
 		);
 		await queryRunner.query(
 			`CREATE UNIQUE INDEX "uq_achievement_id" ON "achievement" ("game_id", "key") `,
@@ -182,7 +182,9 @@ export class InitialMigration1760203409261 implements MigrationInterface {
 		await queryRunner.query(`DROP INDEX "public"."uq_api_key_game_hash"`);
 		await queryRunner.query(`DROP TABLE "api_key"`);
 		await queryRunner.query(`DROP INDEX "public"."uq_achievement_id"`);
-		await queryRunner.query(`DROP INDEX "public"."idx_achievement_id)"`);
+		await queryRunner.query(
+			`DROP INDEX "public"."idx_achievement_key_by_game"`,
+		);
 		await queryRunner.query(`DROP INDEX "public"."idx_game_achievements"`);
 		await queryRunner.query(`DROP TABLE "achievement"`);
 		await queryRunner.query(

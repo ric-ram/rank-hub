@@ -13,7 +13,7 @@ import { PlayerAchievement } from 'src/player_achievement/entities/player_achiev
 
 @Entity({ name: 'achievement' })
 @Index('uq_achievement_id', ['game', 'key'], { unique: true })
-@Index('idx_achievement_id', ['game', 'key'])
+@Index('idx_achievement_key_by_game', ['game', 'key'])
 @Index('idx_game_achievements', ['game'])
 export class Achievement {
 	@PrimaryGeneratedColumn('uuid')
