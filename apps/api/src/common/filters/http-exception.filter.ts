@@ -27,7 +27,6 @@ export class GlobalHttpExceptionFilter implements ExceptionFilter {
 
 		if (exception instanceof HttpException) {
 			status = exception.getStatus();
-			//code = (exception.name || 'HTTP_EXCEPTION').toUpperCase();
 			const response = exception.getResponse();
 
 			const explicitCode =
