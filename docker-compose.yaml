@@ -12,7 +12,7 @@ services:
       - 3001:3001
     volumes:
       - ./apps/api:/usr/src/apps/api # for dev hot-reload (remove in prod)
-      - /usr/src/apps/api/node_modules
+      # - /usr/src/apps/api/node_modules
     depends_on:
       db:
         condition: service_healthy
