@@ -1,0 +1,44 @@
+import {
+	Column,
+	Entity,
+	Index,
+	JoinColumn,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+} from 'typeorm';
+
+import { Game } from 'src/game/entities/game.entity';
+
+@Entity({ name: 'api_key' })
+@Index('idx_api_key_game_active', ['game'], { where: `"is_active" = true` })
+@Index('uq_api_key_game_hash', ['game', 'keyHash'], { unique: true })
+export class ApiKey {
+	@PrimaryGeneratedColumn('uuid')
+	id: string;
+
+	@Column({ name: 'game_id', type: 'uuid', nullable: false })
+	gameId: string;
+
+	@ManyToOne(() => Game, { onDelete: 'CASCADE' })
+	@JoinColumn({ name: 'game_id', referencedColumnName: 'id' })
+	game: Game;
+
+	@Column({ name: 'key_hash', type: 'text', nullable: false })
+	keyHash: string;
+
+	@Column({ name: 'label', type: 'text', nullable: true })
+	label?: string;
+
+	@Column({ name: 'is_active', type: 'boolean', default: true })
+	is_active: boolean;
+
+	@Column({
+		name: 'created_at',
+		type: 'timestamptz',
+		default: () => 'now()',
+	})
+	createdAt: Date;
+
+	@Column({ name: 'revoked_at', type: 'timestamptz', nullable: true })
+	revokedAt?: Date;
+}
