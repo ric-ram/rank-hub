@@ -6,7 +6,7 @@ import {
 	PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { Game } from 'src/game/entities/game.entity';
+import { Game } from 'src/games/entities/game.entity';
 
 @Entity({ name: 'user_admin' })
 export class UserAdmin {

@@ -1,19 +1,19 @@
-import { AchievementModule } from './achievement/achievement.module';
-import { ApiKeyModule } from './api_key/api_key.module';
+import { AchievementModule } from './achievements/achievement.module';
+import { ApiKeyModule } from './api_keys/api_key.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { GameModule } from './game/game.module';
+import { GameModule } from './games/game.module';
 import { GlobalHttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LeaderboardEntryModule } from './leaderboard_entry/leaderboard_entry.module';
-import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { LeaderboardModule } from './leaderboards/leaderboard.module';
 import { LoggerModule } from 'nestjs-pino';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Module } from '@nestjs/common';
 import { PlayerAchievementModule } from './player_achievement/player_achievement.module';
-import { PlayerModule } from './player/player.module';
+import { PlayerModule } from './players/player.module';
 import { ScoreModule } from './score/score.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserAdminModule } from './user-admin/user-admin.module';
