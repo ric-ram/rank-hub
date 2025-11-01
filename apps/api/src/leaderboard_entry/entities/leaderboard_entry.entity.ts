@@ -8,8 +8,8 @@ import {
 	PrimaryColumn,
 } from 'typeorm';
 
-import { Leaderboard } from 'src/leaderboard/entities/leaderboard.entity';
-import { Player } from 'src/player/entities/player.entity';
+import { Leaderboard } from 'src/leaderboards/entities/leaderboard.entity';
+import { Player } from 'src/players/entities/player.entity';
 import { Score } from 'src/score/entities/score.entity';
 
 @Entity({ name: 'leaderboard_entry' })

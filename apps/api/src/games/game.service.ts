@@ -12,15 +12,15 @@ export class GameService {
 		return `This action returns all game`;
 	}
 
-	findOne(id: number) {
+	findOne(id: string) {
 		return `This action returns a #${id} game`;
 	}
 
-	update(id: number, updateGameDto: UpdateGameDto) {
+	update(id: string, updateGameDto: UpdateGameDto) {
 		return `This action updates a #${id} game`;
 	}
 
-	remove(id: number) {
+	remove(id: string) {
 		return `This action removes a #${id} game`;
 	}
 }

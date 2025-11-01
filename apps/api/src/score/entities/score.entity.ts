@@ -7,8 +7,8 @@ import {
 	PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { Leaderboard } from 'src/leaderboard/entities/leaderboard.entity';
-import { Player } from 'src/player/entities/player.entity';
+import { Leaderboard } from 'src/leaderboards/entities/leaderboard.entity';
+import { Player } from 'src/players/entities/player.entity';
 
 @Entity({ name: 'score' })
 @Index('idx_score_desc', ['leaderboard', 'value']) // fast Top-N when higher is better.

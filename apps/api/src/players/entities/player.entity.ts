@@ -8,7 +8,7 @@ import {
 	PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { Game } from 'src/game/entities/game.entity';
+import { Game } from 'src/games/entities/game.entity';
 import { LeaderboardEntry } from 'src/leaderboard_entry/entities/leaderboard_entry.entity';
 import { PlayerAchievement } from 'src/player_achievement/entities/player_achievement.entity';
 import { Score } from 'src/score/entities/score.entity';

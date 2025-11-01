@@ -9,9 +9,9 @@ import {
 	PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { Achievement } from 'src/achievement/entities/achievement.entity';
-import { ApiKey } from 'src/api_key/entities/api_key.entity';
-import { Player } from 'src/player/entities/player.entity';
+import { Achievement } from 'src/achievements/entities/achievement.entity';
+import { ApiKey } from 'src/api_keys/entities/api_key.entity';
+import { Player } from 'src/players/entities/player.entity';
 import { UserAdmin } from 'src/user-admin/entities/user-admin.entity';
 
 @Entity('game')

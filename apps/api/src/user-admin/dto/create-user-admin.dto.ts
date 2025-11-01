@@ -8,5 +8,5 @@ export class CreateUserAdminDto {
 	@IsNotEmpty()
 	@IsString()
 	@MinLength(20)
-	password!: string;
+	passwordHash!: string;
 }

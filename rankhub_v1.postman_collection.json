@@ -1,0 +1,733 @@
+{
+	"info": {
+		"_postman_id": "55bf0436-12e4-416c-8aac-0321ca5b846e",
+		"name": "Rank Hub",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25079522"
+	},
+	"item": [
+		{
+			"name": "User Admin",
+			"item": [
+				{
+					"name": "ALL User Admin",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-admin/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-admin",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"test@email.com\",\r\n    \"passwordHash\": \"cb9b36b102080fdd528586959f259535502519291b06d3ddfe76c8a74cecd638\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user-admin/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-admin",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-admin/1549a6ab-6c6c-451f-bf4b-6af3c191c551",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-admin",
+								"1549a6ab-6c6c-451f-bf4b-6af3c191c551"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User With ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"testing@email.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user-admin/1549a6ab-6c6c-451f-bf4b-6af3c191c551",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-admin",
+								"1549a6ab-6c6c-451f-bf4b-6af3c191c551"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User With ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-admin/1549a6ab-6c6c-451f-bf4b-6af3c191c551",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-admin",
+								"1549a6ab-6c6c-451f-bf4b-6af3c191c551"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Game",
+			"item": [
+				{
+					"name": "ALL Games",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/games/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"games",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Game",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test game\",\r\n    \"shortCode\": \"GAME\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/games/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"games",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Game By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/games/28528cc0-6fea-4f2d-92d0-4cf3a9832030",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"games",
+								"28528cc0-6fea-4f2d-92d0-4cf3a9832030"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Game With ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Testing Game\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/games/28528cc0-6fea-4f2d-92d0-4cf3a9832030",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"games",
+								"28528cc0-6fea-4f2d-92d0-4cf3a9832030"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Game With ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/games/28528cc0-6fea-4f2d-92d0-4cf3a9832030",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"games",
+								"28528cc0-6fea-4f2d-92d0-4cf3a9832030"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Leaderboards",
+			"item": [
+				{
+					"name": "ALL Leaderboards",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/leaderboards/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"leaderboards",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Leaderboard",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test leaderboard\",\r\n    \"metricType\": \"SCORE\",\r\n    \"orderDir\": \"DESC\",\r\n    \"isDefault\": \"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/leaderboards/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"leaderboards",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Leaderboard By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/leaderboards/46ea771b-4949-480b-b40e-c071ca80c232",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"leaderboards",
+								"46ea771b-4949-480b-b40e-c071ca80c232"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Leaderboard With ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderDir\": \"ASC\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/leaderboards/46ea771b-4949-480b-b40e-c071ca80c232",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"leaderboards",
+								"46ea771b-4949-480b-b40e-c071ca80c232"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Leaderboard With ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/leaderboards/46ea771b-4949-480b-b40e-c071ca80c232",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"leaderboards",
+								"46ea771b-4949-480b-b40e-c071ca80c232"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Leaderboards Copy",
+			"item": [
+				{
+					"name": "ALL Achievements",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/achievements/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"achievements",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Achievement",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"key\": \"10 Kills\",\r\n    \"title\": \"Killer\",\r\n    \"description\": \"Kill your first 10 enemies\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/achievements/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"achievements",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Achievement By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/achievements/ef1afede-b63d-44fb-8f77-a2de9ba15c53",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"achievements",
+								"ef1afede-b63d-44fb-8f77-a2de9ba15c53"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Achievement With ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"Become a Killer by killing 10 enemies.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/achievements/ef1afede-b63d-44fb-8f77-a2de9ba15c53",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"achievements",
+								"ef1afede-b63d-44fb-8f77-a2de9ba15c53"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Achievement With ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/achievements/ef1afede-b63d-44fb-8f77-a2de9ba15c53",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"achievements",
+								"ef1afede-b63d-44fb-8f77-a2de9ba15c53"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Players",
+			"item": [
+				{
+					"name": "GET - ALL Players",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/players/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"players",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Player",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"testPlayer\",\r\n    \"email\": \"player@test.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/players/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"players",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Player By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/players/9da5f871-c70c-4060-9a18-4c2c6f867a6c",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"players",
+								"9da5f871-c70c-4060-9a18-4c2c6f867a6c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Player With ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"player@testing.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/players/9da5f871-c70c-4060-9a18-4c2c6f867a6c",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"players",
+								"9da5f871-c70c-4060-9a18-4c2c6f867a6c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Player With ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/players/9da5f871-c70c-4060-9a18-4c2c6f867a6c",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"players",
+								"9da5f871-c70c-4060-9a18-4c2c6f867a6c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API Key",
+			"item": [
+				{
+					"name": "GET - All Keys",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api-keys/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api-keys",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Key",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"label\": \"Test Key\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api-keys/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api-keys",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Key By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api-keys/8d42095e-8371-4c0c-80ea-0cc095c5b37a",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api-keys",
+								"8d42095e-8371-4c0c-80ea-0cc095c5b37a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Key With ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"label\": \"Testing Keys\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api-keys/8d42095e-8371-4c0c-80ea-0cc095c5b37a",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api-keys",
+								"8d42095e-8371-4c0c-80ea-0cc095c5b37a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Key With ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api-keys/8d42095e-8371-4c0c-80ea-0cc095c5b37a",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api-keys",
+								"8d42095e-8371-4c0c-80ea-0cc095c5b37a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Poke",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3001",
+					"host": [
+						"localhost"
+					],
+					"port": "3001"
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": ""
+		}
+	]
+}

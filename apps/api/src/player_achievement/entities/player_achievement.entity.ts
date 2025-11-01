@@ -7,8 +7,8 @@ import {
 	PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { Achievement } from 'src/achievement/entities/achievement.entity';
-import { Player } from 'src/player/entities/player.entity';
+import { Achievement } from 'src/achievements/entities/achievement.entity';
+import { Player } from 'src/players/entities/player.entity';
 
 @Entity({ name: 'player_achievement' })
 @Index('uq_player_achievement_id', ['achievement', 'player'], { unique: true }) // one unlock per player per achievement.

@@ -1,10 +1,10 @@
 import * as bcrypt from 'bcrypt';
 
-import { Achievement } from 'src/achievement/entities/achievement.entity';
-import { ApiKey } from 'src/api_key/entities/api_key.entity';
-import { Game } from 'src/game/entities/game.entity';
-import { Leaderboard } from 'src/leaderboard/entities/leaderboard.entity';
-import { Player } from 'src/player/entities/player.entity';
+import { Achievement } from 'src/achievements/entities/achievement.entity';
+import { ApiKey } from 'src/api_keys/entities/api_key.entity';
+import { Game } from 'src/games/entities/game.entity';
+import { Leaderboard } from 'src/leaderboards/entities/leaderboard.entity';
+import { Player } from 'src/players/entities/player.entity';
 import { UserAdmin } from 'src/user-admin/entities/user-admin.entity';
 import dataSource from './datasource';
 
