@@ -8,5 +8,6 @@ import { UserAdminService } from './user-admin.service';
 	imports: [TypeOrmModule.forFeature([UserAdmin])],
 	controllers: [UserAdminController],
 	providers: [UserAdminService],
+	exports: [TypeOrmModule, UserAdminService],
 })
 export class UserAdminModule {}

@@ -27,7 +27,7 @@ export class UserAdminController {
 
 	@Get(':id')
 	findOne(@Param('id') id: string) {
-		return this.userAdminService.findOne(id);
+		return this.userAdminService.findOneById(id);
 	}
 
 	@Patch(':id')

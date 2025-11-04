@@ -1,10 +1,13 @@
+import { APP_GUARD } from '@nestjs/core';
 import { AchievementModule } from './achievements/achievement.module';
 import { ApiKeyModule } from './api_keys/api_key.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { GameModule } from './games/game.module';
 import { GlobalHttpExceptionFilter } from './common/filters/http-exception.filter';
+import { JwtGuard } from './auth/guards/jwt.guard';
 import { LeaderboardEntryModule } from './leaderboard_entry/leaderboard_entry.module';
 import { LeaderboardModule } from './leaderboards/leaderboard.module';
 import { LoggerModule } from 'nestjs-pino';
@@ -75,9 +78,18 @@ import { dataSourceOptions } from 'db/datasource';
 		LeaderboardEntryModule,
 		AchievementModule,
 		PlayerAchievementModule,
+		AuthModule,
 	],
 	controllers: [AppController],
-	providers: [AppService, LoggingInterceptor, GlobalHttpExceptionFilter],
+	providers: [
+		AppService,
+		LoggingInterceptor,
+		GlobalHttpExceptionFilter,
+		{
+			provide: APP_GUARD,
+			useClass: JwtGuard,
+		},
+	],
 	exports: [LoggingInterceptor, GlobalHttpExceptionFilter],
 })
 export class AppModule {}
