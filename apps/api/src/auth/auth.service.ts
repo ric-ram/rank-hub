@@ -1,11 +1,17 @@
 import * as bcrypt from 'bcrypt';
 
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+	BadRequestException,
+	HttpException,
+	Injectable,
+	InternalServerErrorException,
+	UnauthorizedException,
+} from '@nestjs/common';
 
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Logger } from 'nestjs-pino';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import { randomBytes } from 'node:crypto';
 import { CreateUserAdminDto } from 'src/user-admin/dto/create-user-admin.dto';
 import { UserAdmin } from 'src/user-admin/entities/user-admin.entity';
@@ -40,7 +46,7 @@ export class AuthService {
 		private readonly userAdminService: UserAdminService,
 		private readonly jwtService: JwtService,
 		private readonly configService: ConfigService,
-		private readonly logger: Logger,
+		@InjectPinoLogger(AuthService.name) private readonly logger: PinoLogger,
 	) {}
 
 	private get REFRESH_TTL_MS(): number {
@@ -51,156 +57,248 @@ export class AuthService {
 	}
 
 	private async issueRefreshToken(): Promise<IGenRefreshToken> {
-		const refreshToken = randomBytes(32).toString('base64url'); // 256-bit
-		const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
-		const expiresAt = new Date(Date.now() + this.REFRESH_TTL_MS);
+		try {
+			const refreshToken = randomBytes(32).toString('base64url'); // 256-bit
+			const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
+			const expiresAt = new Date(Date.now() + this.REFRESH_TTL_MS);
 
-		return {
-			refreshToken: refreshToken,
-			refreshTokenHash: refreshTokenHash,
-			expiresAt: expiresAt,
-		};
+			return {
+				refreshToken: refreshToken,
+				refreshTokenHash: refreshTokenHash,
+				expiresAt: expiresAt,
+			};
+		} catch (e: any) {
+			this.logger.error(
+				{ err: (e as Error)?.message, code: 'AUTH.REFRESH_TOKEN' },
+				'issue refresh token failed',
+			);
+			if (e instanceof HttpException) throw e;
+			throw new InternalServerErrorException('AUTH.INTERNAL');
+		}
 	}
 
 	async issueAccessToken(adminId: string): Promise<string> {
-		const payload = { sub: adminId, role: 'ADMIN' };
-		const accessToken = await this.jwtService.signAsync(payload, {
-			issuer: 'rankhub.api',
-			audience: 'rankhub.admin',
-		});
+		try {
+			const payload = { sub: adminId, role: 'ADMIN' };
+			const accessToken = await this.jwtService.signAsync(payload, {
+				issuer: 'rankhub.api',
+				audience: 'rankhub.admin',
+			});
 
-		return accessToken;
+			return accessToken;
+		} catch (e: any) {
+			this.logger.error(
+				{
+					err: (e as Error)?.message,
+					code: 'AUTH.ACCESS_TOKEN',
+				},
+				'issue access token failed',
+			);
+			if (e instanceof HttpException) throw e;
+			throw new InternalServerErrorException('AUTH.INTERNAL');
+		}
 	}
 
 	async validateUser(email: string, password: string): Promise<UserAdmin> {
-		const admin: UserAdmin | null =
-			await this.userAdminService.findOneByEmail(email);
-		if (!admin) {
-			throw new BadRequestException('User not found!');
+		try {
+			const admin: UserAdmin | null =
+				await this.userAdminService.findOneByEmail(email);
+			if (!admin) {
+				throw new BadRequestException('Invalid credentials');
+			}
+
+			const isMatch: boolean = await bcrypt.compare(
+				password,
+				admin.passwordHash,
+			);
+
+			if (!isMatch) {
+				throw new BadRequestException('Invalid credentials');
+			}
+
+			return admin;
+		} catch (e: any) {
+			this.logger.error(
+				{
+					err: (e as Error)?.message,
+					code: 'AUTH.VALIDATE_USER',
+				},
+				'user validation failed',
+			);
+			if (e instanceof HttpException) throw e;
+			throw new InternalServerErrorException('AUTH.INTERNAL');
 		}
-
-		const isMatch: boolean = await bcrypt.compare(
-			password,
-			admin.passwordHash,
-		);
-
-		if (!isMatch) {
-			throw new BadRequestException('Password do not match!');
-		}
-
-		return admin;
 	}
 
 	async login(admin: UserAdmin): Promise<IAuthenticatedResponse> {
-		const accessToken = await this.issueAccessToken(admin.id);
+		try {
+			const accessToken = await this.issueAccessToken(admin.id);
 
-		const { refreshToken, refreshTokenHash, expiresAt } =
-			await this.issueRefreshToken();
-		await this.refreshTokenRepo.save({
-			adminId: admin.id,
-			tokenHash: refreshTokenHash,
-			expiresAt: expiresAt,
-		});
+			const { refreshToken, refreshTokenHash, expiresAt } =
+				await this.issueRefreshToken();
+			await this.refreshTokenRepo.save({
+				adminId: admin.id,
+				tokenHash: refreshTokenHash,
+				expiresAt: expiresAt,
+			});
 
-		return {
-			access_token: accessToken,
-			refresh_token: refreshToken,
-			expires_at: expiresAt,
-		};
+			return {
+				access_token: accessToken,
+				refresh_token: refreshToken,
+				expires_at: expiresAt,
+			};
+		} catch (e: any) {
+			this.logger.error(
+				{
+					err: (e as Error)?.message,
+					code: 'AUTH.LOGIN',
+				},
+				'login failed',
+			);
+			if (e instanceof HttpException) throw e;
+			throw new InternalServerErrorException('AUTH.INTERNAL');
+		}
 	}
 
 	async register(
 		admin: RegisterAdminRequestDto,
 	): Promise<IAuthenticatedResponse> {
-		const existingAdmin = await this.userAdminService.findOneByEmail(
-			admin.email,
-		);
+		try {
+			const existingAdmin = await this.userAdminService.findOneByEmail(
+				admin.email,
+			);
 
-		if (existingAdmin) {
-			throw new BadRequestException('Email is already in use');
+			if (existingAdmin) {
+				throw new BadRequestException('Email is already in use');
+			}
+
+			const hashedPassword = await bcrypt.hash(admin.password, 10);
+			const newAdmin: CreateUserAdminDto = {
+				email: admin.email,
+				passwordHash: hashedPassword,
+			};
+			const createdAdmin = await this.userAdminService.create(newAdmin);
+			return this.login(createdAdmin);
+		} catch (e: any) {
+			this.logger.error(
+				{
+					err: (e as Error)?.message,
+					code: 'AUTH.REGISTER',
+				},
+				'register new user failed',
+			);
+			if (e instanceof HttpException) throw e;
+			throw new InternalServerErrorException('AUTH.INTERNAL');
 		}
-
-		const hashedPassword = await bcrypt.hash(admin.password, 10);
-		const newAdmin: CreateUserAdminDto = {
-			email: admin.email,
-			passwordHash: hashedPassword,
-		};
-		const createdAdmin = await this.userAdminService.create(newAdmin);
-		return this.login(createdAdmin);
 	}
 
 	async verifyAndRotateRefresh(
 		refreshToken: string,
 	): Promise<IRotateRefreshToken> {
-		const rows = await this.refreshTokenRepo.find({
-			where: { revokedAt: IsNull() },
-		});
+		if (!refreshToken)
+			throw new UnauthorizedException('AUTH.MISSING_REFRESH');
 
-		this.logger.log(refreshToken);
-		this.logger.log(rows);
+		try {
+			const rows = await this.refreshTokenRepo.find({
+				where: { revokedAt: IsNull() },
+			});
 
-		let match: RefreshTokens | undefined;
-		for (const row of rows) {
-			if (await bcrypt.compare(refreshToken, row.tokenHash)) {
-				match = row;
-				break;
+			let match: RefreshTokens | undefined;
+			for (const row of rows) {
+				if (await bcrypt.compare(refreshToken, row.tokenHash)) {
+					match = row;
+					break;
+				}
 			}
+
+			if (!match) throw new UnauthorizedException('AUTH.INVALID_REFRESH');
+
+			await this.refreshTokenRepo.update(
+				{ id: match.id },
+				{ revokedAt: new Date() },
+			);
+
+			const {
+				refreshToken: newRefreshToken,
+				refreshTokenHash,
+				expiresAt,
+			} = await this.issueRefreshToken();
+
+			await this.refreshTokenRepo.save({
+				adminId: match.adminId,
+				tokenHash: refreshTokenHash,
+				expiresAt: expiresAt,
+			});
+
+			return {
+				adminId: match.adminId,
+				refreshToken: newRefreshToken,
+				expiresAt: expiresAt,
+			};
+		} catch (e: any) {
+			this.logger.error(
+				{
+					err: (e as Error)?.message,
+					code: 'AUTH.VERIFY_ROTATE_REFRESH',
+				},
+				'failed to verify and rotate refresh token',
+			);
+			if (e instanceof HttpException) throw e;
+			throw new InternalServerErrorException('AUTH.INTERNAL');
 		}
-
-		if (!match)
-			throw new BadRequestException('Invalid or Expired Refresh Token');
-
-		await this.refreshTokenRepo.update(
-			{ id: match.id },
-			{ revokedAt: new Date() },
-		);
-
-		const {
-			refreshToken: newRefreshToken,
-			refreshTokenHash,
-			expiresAt,
-		} = await this.issueRefreshToken();
-
-		await this.refreshTokenRepo.save({
-			adminId: match.adminId,
-			tokenHash: refreshTokenHash,
-			expiresAt: expiresAt,
-		});
-
-		return {
-			adminId: match.adminId,
-			refreshToken: newRefreshToken,
-			expiresAt: expiresAt,
-		};
 	}
 
 	async logout(adminId: string, refreshCookie?: string): Promise<void> {
 		if (!refreshCookie) return;
 
-		const rows = await this.refreshTokenRepo.find({
-			where: { adminId: adminId, revokedAt: IsNull() },
-		});
-		for (const row of rows) {
-			if (await bcrypt.compare(refreshCookie, row.tokenHash)) {
-				await this.refreshTokenRepo.update(
-					{ id: row.id },
-					{ revokedAt: new Date() },
-				);
-				break;
+		try {
+			const rows = await this.refreshTokenRepo.find({
+				where: { adminId: adminId, revokedAt: IsNull() },
+			});
+			for (const row of rows) {
+				if (await bcrypt.compare(refreshCookie, row.tokenHash)) {
+					await this.refreshTokenRepo.update(
+						{ id: row.id },
+						{ revokedAt: new Date() },
+					);
+					break;
+				}
 			}
+		} catch (e: any) {
+			this.logger.error(
+				{
+					err: (e as Error)?.message,
+					code: 'AUTH.LOGOUT',
+				},
+				'logout failed',
+			);
+			if (e instanceof HttpException) throw e;
+			throw new InternalServerErrorException('AUTH.INTERNAL');
 		}
 	}
 
 	async logoutAll(adminId: string): Promise<void> {
-		const rows = await this.refreshTokenRepo.find({
-			where: { adminId: adminId, revokedAt: IsNull() },
-		});
+		try {
+			const rows = await this.refreshTokenRepo.find({
+				where: { adminId: adminId, revokedAt: IsNull() },
+			});
 
-		for (const row of rows) {
-			await this.refreshTokenRepo.update(
-				{ id: row.id },
-				{ revokedAt: new Date() },
+			for (const row of rows) {
+				await this.refreshTokenRepo.update(
+					{ id: row.id },
+					{ revokedAt: new Date() },
+				);
+			}
+		} catch (e: any) {
+			this.logger.error(
+				{
+					err: (e as Error)?.message,
+					code: 'AUTH.LOGOUT_ALL',
+				},
+				'logout all failed',
 			);
+			if (e instanceof HttpException) throw e;
+			throw new InternalServerErrorException('AUTH.INTERNAL');
 		}
 	}
 }
