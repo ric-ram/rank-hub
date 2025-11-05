@@ -5,6 +5,7 @@ import { Logger } from 'nestjs-pino';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { json } from 'express';
 
@@ -15,6 +16,8 @@ async function bootstrap() {
 	// Security + body limits
 	app.use(helmet());
 	app.use(json({ limit: 'imb' }));
+
+	app.use(cookieParser());
 
 	// Correlation ID before anything else
 	// eslint-disable-next-line @typescript-eslint/unbound-method

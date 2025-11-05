@@ -1,6 +1,7 @@
-import { UUID } from 'node:crypto';
-
 export type AccessTokenPayload = {
-	userId: UUID;
-	email: string;
+	sub: string;
+	role?: 'ADMIN';
+	iss?: string;
+	aud?: string;
+	jti?: string;
 };

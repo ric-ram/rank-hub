@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 
 import { Game } from 'src/games/entities/game.entity';
+import { RefreshTokens } from 'src/auth/entities/refresh-tokens.entity';
 
 @Entity({ name: 'user_admin' })
 export class UserAdmin {
@@ -36,4 +37,9 @@ export class UserAdmin {
 		cascade: false,
 	})
 	games: Game[];
+
+	@OneToMany(() => RefreshTokens, (refreshToken) => refreshToken.adminId, {
+		cascade: false,
+	})
+	refreshTokens: RefreshTokens[];
 }

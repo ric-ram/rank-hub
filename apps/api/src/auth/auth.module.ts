@@ -5,6 +5,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { LocalStrategy } from './strategy/local.strategy';
 import { Module } from '@nestjs/common';
+import { RefreshTokens } from './entities/refresh-tokens.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserAdminModule } from 'src/user-admin/user-admin.module';
 import { config } from 'dotenv';
 import path from 'node:path';
@@ -14,13 +16,14 @@ config({ path: path.resolve(__dirname, '../../../../.env') });
 @Module({
 	imports: [
 		UserAdminModule,
+		TypeOrmModule.forFeature([RefreshTokens]),
 		JwtModule.registerAsync({
 			useFactory: (configService: ConfigService) => ({
 				secret: configService.get<string>('JWT_SECRET'),
 				signOptions: {
 					expiresIn: Number.parseInt(
 						configService.getOrThrow<string>(
-							'ACCESS_TOKEN_VALIDITY_DURATION_IN_SEC',
+							'ACCESS_TOKEN_EXPIRATION_MS',
 						),
 					),
 				},
