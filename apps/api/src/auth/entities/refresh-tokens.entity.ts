@@ -12,6 +12,10 @@ import { UserAdmin } from 'src/user-admin/entities/user-admin.entity';
 
 @Entity({ name: 'refresh_tokens' })
 @Index('idx_refresh_user_active', ['adminId', 'revokedAt'])
+@Index('uq_refresh_user_fp_active', ['adminId', 'fingerprint'], {
+	unique: true,
+	where: `"revoked_at" = null`,
+})
 export class RefreshTokens {
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
@@ -25,6 +29,9 @@ export class RefreshTokens {
 
 	@Column({ name: 'token_hash', nullable: false })
 	tokenHash: string;
+
+	@Column({ name: 'fingerprint', nullable: false })
+	fingerprint: string;
 
 	@Column({ name: 'expires_at', type: 'timestamptz', nullable: false })
 	@Index('idx_refresh_expires_at')

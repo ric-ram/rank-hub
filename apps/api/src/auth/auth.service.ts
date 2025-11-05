@@ -12,10 +12,10 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
-import { randomBytes } from 'node:crypto';
+import { createHmac, randomBytes } from 'node:crypto';
 import { CreateUserAdminDto } from 'src/user-admin/dto/create-user-admin.dto';
 import { UserAdmin } from 'src/user-admin/entities/user-admin.entity';
-import { IsNull, Repository } from 'typeorm';
+import { IsNull, MoreThan, Repository } from 'typeorm';
 import { UserAdminService } from '../user-admin/user-admin.service';
 import { RegisterAdminRequestDto } from './dto/register-admin.dto';
 import { RefreshTokens } from './entities/refresh-tokens.entity';
@@ -29,6 +29,7 @@ interface IAuthenticatedResponse {
 interface IGenRefreshToken {
 	refreshToken: string;
 	refreshTokenHash: string;
+	fingerprint: string;
 	expiresAt: Date;
 }
 
@@ -56,15 +57,22 @@ export class AuthService {
 		);
 	}
 
+	private refreshTokenFingerprint(refreshToken: string): string {
+		const secret = this.configService.getOrThrow<string>('REFRESH_PEPPER');
+		return createHmac('sha256', secret).update(refreshToken).digest('hex');
+	}
+
 	private async issueRefreshToken(): Promise<IGenRefreshToken> {
 		try {
 			const refreshToken = randomBytes(32).toString('base64url'); // 256-bit
+			const fingerprint = this.refreshTokenFingerprint(refreshToken);
 			const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
 			const expiresAt = new Date(Date.now() + this.REFRESH_TTL_MS);
 
 			return {
 				refreshToken: refreshToken,
 				refreshTokenHash: refreshTokenHash,
+				fingerprint: fingerprint,
 				expiresAt: expiresAt,
 			};
 		} catch (e: any) {
@@ -134,11 +142,12 @@ export class AuthService {
 		try {
 			const accessToken = await this.issueAccessToken(admin.id);
 
-			const { refreshToken, refreshTokenHash, expiresAt } =
+			const { refreshToken, refreshTokenHash, fingerprint, expiresAt } =
 				await this.issueRefreshToken();
 			await this.refreshTokenRepo.save({
 				adminId: admin.id,
 				tokenHash: refreshTokenHash,
+				fingerprint,
 				expiresAt: expiresAt,
 			});
 
@@ -199,39 +208,42 @@ export class AuthService {
 			throw new UnauthorizedException('AUTH.MISSING_REFRESH');
 
 		try {
-			const rows = await this.refreshTokenRepo.find({
-				where: { revokedAt: IsNull() },
+			const fingerprint = this.refreshTokenFingerprint(refreshToken);
+			const row = await this.refreshTokenRepo.findOne({
+				where: {
+					fingerprint,
+					revokedAt: IsNull(),
+					expiresAt: MoreThan(new Date()),
+				},
 			});
 
-			let match: RefreshTokens | undefined;
-			for (const row of rows) {
-				if (await bcrypt.compare(refreshToken, row.tokenHash)) {
-					match = row;
-					break;
-				}
-			}
+			if (!row) throw new UnauthorizedException('AUTH.INVALID_REFRESH');
+
+			const match = await bcrypt.compare(refreshToken, row.tokenHash);
 
 			if (!match) throw new UnauthorizedException('AUTH.INVALID_REFRESH');
 
 			await this.refreshTokenRepo.update(
-				{ id: match.id },
+				{ id: row.id },
 				{ revokedAt: new Date() },
 			);
 
 			const {
 				refreshToken: newRefreshToken,
 				refreshTokenHash,
+				fingerprint: newFingerprint,
 				expiresAt,
 			} = await this.issueRefreshToken();
 
 			await this.refreshTokenRepo.save({
-				adminId: match.adminId,
+				adminId: row.adminId,
 				tokenHash: refreshTokenHash,
+				fingerprint: newFingerprint,
 				expiresAt: expiresAt,
 			});
 
 			return {
-				adminId: match.adminId,
+				adminId: row.adminId,
 				refreshToken: newRefreshToken,
 				expiresAt: expiresAt,
 			};
