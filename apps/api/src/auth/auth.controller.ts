@@ -7,6 +7,7 @@ import {
 	Res,
 	UnauthorizedException,
 	UseGuards,
+	UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import express from 'express';
@@ -15,6 +16,7 @@ import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { LoginAdminResponseDto } from './dto/login-admin.dto';
 import { RegisterAdminRequestDto } from './dto/register-admin.dto';
+import { CookieErrorInterceptor } from './interceptors/cookie-error.interceptor';
 
 interface IAuthenticatedRequest extends express.Request {
 	adminId: string;
@@ -30,6 +32,7 @@ export const COOKIE_OPTS = {
 	path: '/auth',
 } as const;
 
+@UseInterceptors(CookieErrorInterceptor)
 @Controller('auth')
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
