@@ -2,13 +2,28 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import { AccessTokenPayload } from '../types/AccessTokenPayload';
-import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
+import { AccessTokenPayload } from '../types/AccessTokenPayload';
 
+/**
+ * JWT strategy for validating access tokens from the Authorization Bearer header.
+ * Validates signature/exp/iss/aud and exposes a minimal user object on req.user.
+ *
+ * @export
+ * @class JwtStrategy
+ * @typedef {JwtStrategy}
+ * @extends {PassportStrategy(Strategy)}
+ */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
+	/**
+	 * Creates an instance of JwtStrategy.
+	 *
+	 * @constructor
+	 * @param {ConfigService} configService
+	 */
 	constructor(private readonly configService: ConfigService) {
 		super({
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -23,6 +38,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 		});
 	}
 
+	/**
+	 * Map a validated JWT payload to the object exposed as `req.user`.
+	 *
+	 * @param {AccessTokenPayload} payload
+	 * @returns {{ sub: any; role: any; }}
+	 */
 	validate(payload: AccessTokenPayload) {
 		return {
 			sub: payload.sub,

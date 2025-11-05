@@ -20,12 +20,24 @@ import { UserAdminService } from '../user-admin/user-admin.service';
 import { RegisterAdminRequestDto } from './dto/register-admin.dto';
 import { RefreshTokens } from './entities/refresh-tokens.entity';
 
+/**
+ * Response of a successful login
+ *
+ * @interface IAuthenticatedResponse
+ * @typedef {IAuthenticatedResponse}
+ */
 interface IAuthenticatedResponse {
 	access_token: string;
 	refresh_token: string;
 	expires_at: Date;
 }
 
+/**
+ * Return type of a generated refresh token
+ *
+ * @interface IGenRefreshToken
+ * @typedef {IGenRefreshToken}
+ */
 interface IGenRefreshToken {
 	refreshToken: string;
 	refreshTokenHash: string;
@@ -33,14 +45,37 @@ interface IGenRefreshToken {
 	expiresAt: Date;
 }
 
+/**
+ * Response of rotating a refresh token
+ *
+ * @interface IRotateRefreshToken
+ * @typedef {IRotateRefreshToken}
+ */
 interface IRotateRefreshToken {
 	adminId: string;
 	refreshToken: string;
 	expiresAt: Date;
 }
 
+/**
+ * Service responsible for the Business Logic of the Authentication Module
+ *
+ * @export
+ * @class AuthService
+ * @typedef {AuthService}
+ */
 @Injectable()
 export class AuthService {
+	/**
+	 * Creates an instance of AuthService.
+	 *
+	 * @constructor
+	 * @param {Repository<RefreshTokens>} refreshTokenRepo
+	 * @param {UserAdminService} userAdminService
+	 * @param {JwtService} jwtService
+	 * @param {ConfigService} configService
+	 * @param {PinoLogger} logger
+	 */
 	constructor(
 		@InjectRepository(RefreshTokens)
 		private readonly refreshTokenRepo: Repository<RefreshTokens>,
@@ -50,6 +85,13 @@ export class AuthService {
 		@InjectPinoLogger(AuthService.name) private readonly logger: PinoLogger,
 	) {}
 
+	/**
+	 * Gets the expiration time of a refresh token
+	 *
+	 * @private
+	 * @readonly
+	 * @type {number}
+	 */
 	private get REFRESH_TTL_MS(): number {
 		return Number(
 			this.configService.get('REFRESH_TOKEN_EXPIRATION_MS') ??
@@ -57,11 +99,26 @@ export class AuthService {
 		);
 	}
 
+	/**
+	 * Generates a Fingerprint from a refresh token
+	 *
+	 * @private
+	 * @param {string} refreshToken
+	 * @returns {string} fingerprint Refresh token fingerprint
+	 */
 	private refreshTokenFingerprint(refreshToken: string): string {
 		const secret = this.configService.getOrThrow<string>('REFRESH_PEPPER');
 		return createHmac('sha256', secret).update(refreshToken).digest('hex');
 	}
 
+	/**
+	 * Issues a refresh token to be sent in a cookie and saved in the database
+	 *
+	 * @private
+	 * @async
+	 * @returns {Promise<IGenRefreshToken>}
+	 * @throws {InternalServerErrorException} On crypto/hash errors.
+	 */
 	private async issueRefreshToken(): Promise<IGenRefreshToken> {
 		try {
 			const refreshToken = randomBytes(32).toString('base64url'); // 256-bit
@@ -85,6 +142,14 @@ export class AuthService {
 		}
 	}
 
+	/**
+	 * Issues a refresh token to be sent in a cookie and saved in the database
+	 *
+	 * @async
+	 * @param {string} adminId Admin UUID (as string).
+	 * @returns {Promise<string>} Signed access token (JWT).
+	 * @throws {InternalServerErrorException} On signing/config errors.
+	 */
 	async issueAccessToken(adminId: string): Promise<string> {
 		try {
 			const payload = { sub: adminId, role: 'ADMIN' };
@@ -107,6 +172,16 @@ export class AuthService {
 		}
 	}
 
+	/**
+	 * Validate credentials and return the matching admin.
+	 *
+	 * @async
+	 * @param {string} email Admin email.
+	 * @param {string} password Plaintext password to verify.
+	 * @returns {Promise<UserAdmin>} The authenticated admin.
+	 * @throws {BadRequestException} When credentials are invalid.
+	 * @throws {InternalServerErrorException} On unexpected DB/crypto errors.
+	 */
 	async validateUser(email: string, password: string): Promise<UserAdmin> {
 		try {
 			const admin: UserAdmin | null =
@@ -138,6 +213,14 @@ export class AuthService {
 		}
 	}
 
+	/**
+	 * Complete login: issues access + refresh, persists refresh, returns both
+	 *
+	 * @async
+	 * @param {UserAdmin} admin Authenticated admin entity.
+	 * @returns {Promise<IAuthenticatedResponse>}
+	 * @throws {InternalServerErrorException} On token issuance/persistence failures.
+	 */
 	async login(admin: UserAdmin): Promise<IAuthenticatedResponse> {
 		try {
 			const accessToken = await this.issueAccessToken(admin.id);
@@ -169,6 +252,15 @@ export class AuthService {
 		}
 	}
 
+	/**
+	 * Register a new admin, then log them in (access + refresh).
+	 *
+	 * @async
+	 * @param {RegisterAdminRequestDto} admin Registration payload.
+	 * @returns {Promise<IAuthenticatedResponse>}
+	 * @throws {BadRequestException | ConflictException} When email already exists.
+	 * @throws {InternalServerErrorException} On DB/crypto/token errors.
+	 */
 	async register(
 		admin: RegisterAdminRequestDto,
 	): Promise<IAuthenticatedResponse> {
@@ -201,6 +293,15 @@ export class AuthService {
 		}
 	}
 
+	/**
+	 * Verify the presented refresh token, rotate it (revoke old, persist new), and return rotation result.
+	 *
+	 * @async
+	 * @param {string} refreshToken Raw refresh token from cookie.
+	 * @returns {Promise<IRotateRefreshToken>}
+	 * @throws {UnauthorizedException} When token is missing/invalid/expired (or reused if enforced).
+	 * @throws {InternalServerErrorException} On DB/crypto errors.
+	 */
 	async verifyAndRotateRefresh(
 		refreshToken: string,
 	): Promise<IRotateRefreshToken> {
@@ -260,6 +361,15 @@ export class AuthService {
 		}
 	}
 
+	/**
+	 * Logout current session: revoke the matching active refresh token (idempotent).
+	 *
+	 * @async
+	 * @param {string} adminId Admin UUID.
+	 * @param {?string} [refreshCookie] Raw refresh token from cookie (if any).
+	 * @returns {Promise<void>}
+	 * @throws {InternalServerErrorException} On DB/crypto errors.
+	 */
 	async logout(adminId: string, refreshCookie?: string): Promise<void> {
 		if (!refreshCookie) return;
 
@@ -289,6 +399,14 @@ export class AuthService {
 		}
 	}
 
+	/**
+	 * Logout all sessions: revoke all active refresh tokens for the admin.
+	 *
+	 * @async
+	 * @param {string} adminId Admin UUID.
+	 * @returns {Promise<void>}
+	 * @throws {InternalServerErrorException} On DB errors.
+	 */
 	async logoutAll(adminId: string): Promise<void> {
 		try {
 			const rows = await this.refreshTokenRepo.find({
