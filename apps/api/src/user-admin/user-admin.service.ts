@@ -20,8 +20,12 @@ export class UserAdminService {
 		return this.repo.find();
 	}
 
-	findOne(id: string): Promise<UserAdmin | null> {
+	findOneById(id: string): Promise<UserAdmin | null> {
 		return this.repo.findOneBy({ id });
+	}
+
+	findOneByEmail(email: string): Promise<UserAdmin | null> {
+		return this.repo.findOneBy({ email });
 	}
 
 	update(
