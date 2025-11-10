@@ -1,3 +1,5 @@
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
 import { AppModule } from './app.module';
 import { CorrelationMiddleware } from './common/middleware/correlation-id.middleware';
 import { GlobalHttpExceptionFilter } from './common/filters/http-exception.filter';
@@ -37,6 +39,17 @@ async function bootstrap() {
 	// Global logging & global error shape
 	app.useGlobalInterceptors(app.get(LoggingInterceptor));
 	app.useGlobalFilters(app.get(GlobalHttpExceptionFilter));
+
+	// Swagger config
+	const config = new DocumentBuilder()
+		.setTitle('RankhHub api')
+		.setDescription('Admin + Game Leaderboards API')
+		.setVersion('1.0.0')
+		.addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
+		.addCookieAuth('refresh_token', { type: 'apiKey', in: 'cookie' })
+		.build();
+	const documentFactory = () => SwaggerModule.createDocument(app, config);
+	SwaggerModule.setup('api', app, documentFactory);
 
 	await app.listen(process.env.PORT ?? 3001);
 }

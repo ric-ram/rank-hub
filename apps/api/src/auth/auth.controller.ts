@@ -10,11 +10,26 @@ import {
 	UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import {
+	ApiBadRequestResponse,
+	ApiBearerAuth,
+	ApiBody,
+	ApiConflictResponse,
+	ApiCookieAuth,
+	ApiCreatedResponse,
+	ApiOkResponse,
+	ApiOperation,
+	ApiTags,
+	ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import express from 'express';
 import { UserAdmin } from 'src/user-admin/entities/user-admin.entity';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
-import { LoginAdminResponseDto } from './dto/login-admin.dto';
+import {
+	LoginAdminRequestDto,
+	LoginAdminResponseDto,
+} from './dto/login-admin.dto';
 import { RegisterAdminRequestDto } from './dto/register-admin.dto';
 import { CookieErrorInterceptor } from './interceptors/cookie-error.interceptor';
 
@@ -61,6 +76,7 @@ export const COOKIE_OPTS = {
  * @class AuthController
  * @typedef {AuthController}
  */
+@ApiTags('auth')
 @UseInterceptors(CookieErrorInterceptor)
 @Controller('auth')
 export class AuthController {
@@ -85,6 +101,15 @@ export class AuthController {
 	@Post('login')
 	@Public()
 	@UseGuards(AuthGuard('local'))
+	@ApiOperation({
+		summary: 'Login',
+		description: 'Email + password → access token; sets refresh cookie.',
+	})
+	@ApiBody({ type: LoginAdminRequestDto })
+	@ApiOkResponse({
+		type: LoginAdminResponseDto,
+	})
+	@ApiBadRequestResponse({ description: 'Invalid credentials' })
 	async login(
 		@Req() req: Request & { user: UserAdmin },
 		@Res({ passthrough: true }) resp: express.Response,
@@ -112,6 +137,20 @@ export class AuthController {
 	 */
 	@Post('register')
 	@Public()
+	@ApiOperation({
+		summary: 'Register a new admin',
+		description:
+			'Creates an admin account, sets a refresh cookie, and returns an access token.',
+	})
+	@ApiCookieAuth() // documents that a cookie may be set by the server
+	@ApiBody({ type: RegisterAdminRequestDto })
+	@ApiCreatedResponse({ type: LoginAdminResponseDto })
+	@ApiBadRequestResponse({
+		description: 'Email is already in use (pre-check) or invalid payload',
+	})
+	@ApiConflictResponse({
+		description: 'Email already exists (race on unique constraint)',
+	})
 	async register(
 		@Body() registerBody: RegisterAdminRequestDto,
 		@Res({ passthrough: true }) resp: express.Response,
@@ -139,6 +178,17 @@ export class AuthController {
 	 */
 	@Post('refresh')
 	@Public()
+	@ApiOperation({
+		summary: 'Refresh access token',
+		description: 'Rotates refresh cookie; returns new access token.',
+	})
+	@ApiCookieAuth()
+	@ApiOkResponse({
+		schema: { properties: { access_token: { type: 'string' } } },
+	})
+	@ApiUnauthorizedResponse({
+		description: 'Missing/invalid/expired refresh token',
+	})
 	async refresh(
 		@Req() req: IAuthenticatedRequest,
 		@Res({ passthrough: true }) resp: express.Response,
@@ -176,6 +226,9 @@ export class AuthController {
 	 */
 	@Post('logout')
 	@UseGuards(AuthGuard('jwt'))
+	@ApiOperation({ summary: 'Logout current session' })
+	@ApiBearerAuth()
+	@ApiOkResponse({ schema: { properties: { success: { type: 'boolean' } } } })
 	async logout(
 		@Req() req: IAuthenticatedRequest,
 		@Res({ passthrough: true }) resp: express.Response,
@@ -203,6 +256,9 @@ export class AuthController {
 	 */
 	@Post('logout-all')
 	@UseGuards(AuthGuard('jwt'))
+	@ApiOperation({ summary: 'Logout all sessions' })
+	@ApiBearerAuth()
+	@ApiOkResponse({ schema: { properties: { success: { type: 'boolean' } } } })
 	async logoutAll(
 		@Req() req: IAuthenticatedRequest,
 		@Res({ passthrough: true }) resp: express.Response,
