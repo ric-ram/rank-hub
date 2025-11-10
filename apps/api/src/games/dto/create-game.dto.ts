@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, Matches } from 'class-validator';
 
 export class CreateGameDto {
 	@IsNotEmpty()
@@ -7,5 +7,6 @@ export class CreateGameDto {
 
 	@IsNotEmpty()
 	@IsString()
+	@Matches(/^[A-Z0-9_]{3,12}$/)
 	shortCode: string;
 }

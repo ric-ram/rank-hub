@@ -23,7 +23,7 @@ import {
 	ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import express from 'express';
-import { UserAdmin } from 'src/user-admin/entities/user-admin.entity';
+import { UserAdmin } from 'src/users-admin/entities/users-admin.entity';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import {

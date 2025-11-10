@@ -7,7 +7,7 @@ import { LocalStrategy } from './strategy/local.strategy';
 import { Module } from '@nestjs/common';
 import { RefreshTokens } from './entities/refresh-tokens.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserAdminModule } from 'src/user-admin/user-admin.module';
+import { UserAdminModule } from 'src/users-admin/users-admin.module';
 import { config } from 'dotenv';
 import path from 'node:path';
 

@@ -8,7 +8,7 @@ import {
 	PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { UserAdmin } from 'src/user-admin/entities/user-admin.entity';
+import { UserAdmin } from 'src/users-admin/entities/users-admin.entity';
 
 @Entity({ name: 'refresh_tokens' })
 @Index('idx_refresh_user_active', ['adminId', 'revokedAt'])
