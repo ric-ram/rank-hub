@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
-import { AccessToken } from '../types/AccessToken';
+import { ApiProperty } from '@nestjs/swagger';
 
 /**
  * DTO for the response to a login request
@@ -8,7 +8,10 @@ import { AccessToken } from '../types/AccessToken';
  * @export
  * @typedef {LoginAdminResponseDto}
  */
-export type LoginAdminResponseDto = AccessToken;
+export class LoginAdminResponseDto {
+	@ApiProperty({ example: 'eyJhbGciOiJI...' })
+	access_token: string;
+}
 
 /**
  * DTO object for a login request
@@ -20,10 +23,12 @@ export type LoginAdminResponseDto = AccessToken;
 export class LoginAdminRequestDto {
 	@IsNotEmpty()
 	@IsEmail()
+	@ApiProperty({ example: 'admin@rankhub.dev' })
 	email!: string;
 
 	@IsNotEmpty()
 	@IsString()
 	@MinLength(8)
+	@ApiProperty({ example: 'admin123', minLength: 8 })
 	password!: string;
 }
