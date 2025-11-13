@@ -1,18 +1,18 @@
 import * as bcrypt from 'bcrypt';
 
-import { Achievement } from 'src/achievements/entities/achievement.entity';
-import { ApiKey } from 'src/api_keys/entities/api_key.entity';
-import { Game } from 'src/games/entities/game.entity';
-import { Leaderboard } from 'src/leaderboards/entities/leaderboard.entity';
-import { Player } from 'src/players/entities/player.entity';
-import { UserAdmin } from 'src/user-admin/entities/user-admin.entity';
+import { Achievement } from 'src/achievements/entities/achievements.entity';
+import { ApiKey } from 'src/api_keys/entities/api_keys.entity';
+import { Games } from 'src/games/entities/games.entity';
+import { Leaderboard } from 'src/leaderboards/entities/leaderboards.entity';
+import { Player } from 'src/players/entities/players.entity';
+import { UserAdmin } from 'src/users-admin/entities/users-admin.entity';
 import dataSource from './datasource';
 
 async function runSeed() {
 	await dataSource.initialize();
 
 	const userRepo = dataSource.getRepository(UserAdmin);
-	const gameRepo = dataSource.getRepository(Game);
+	const gameRepo = dataSource.getRepository(Games);
 	const leaderboardRepo = dataSource.getRepository(Leaderboard);
 	const achievementRepo = dataSource.getRepository(Achievement);
 	const playerRepo = dataSource.getRepository(Player);

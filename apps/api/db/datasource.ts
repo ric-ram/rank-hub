@@ -17,10 +17,11 @@ export const dataSourceOptions: DataSourceOptions = {
 	password: configService.getOrThrow<string>('DB_PASSWORD'),
 	database: configService.getOrThrow<string>('DB_NAME'),
 	entities: ['dist/**/*.entity.js'],
-	migrations: ['dist/db/migrations/*.ts'],
+	migrations: ['dist/db/migrations/*.js'],
 	migrationsTableName: 'migrations',
 	migrationsRun: false,
 	synchronize: process.env.ENV !== 'prod',
+	//synchronize: false,
 	logging: process.env.ENV !== 'prod',
 	extra: {
 		connectionLimit: 10,

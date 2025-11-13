@@ -13,10 +13,10 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import { createHmac, randomBytes } from 'node:crypto';
-import { CreateUserAdminDto } from 'src/user-admin/dto/create-user-admin.dto';
-import { UserAdmin } from 'src/user-admin/entities/user-admin.entity';
+import { CreateUserAdminDto } from 'src/users-admin/dto/create-user-admin.dto';
+import { UserAdmin } from 'src/users-admin/entities/users-admin.entity';
 import { IsNull, MoreThan, Repository } from 'typeorm';
-import { UserAdminService } from '../user-admin/user-admin.service';
+import { UserAdminService } from '../users-admin/users-admin.service';
 import { RegisterAdminRequestDto } from './dto/register-admin.dto';
 import { RefreshTokens } from './entities/refresh-tokens.entity';
 

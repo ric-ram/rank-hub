@@ -1,4 +1,5 @@
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 
 import { AppModule } from './app.module';
 import { CorrelationMiddleware } from './common/middleware/correlation-id.middleware';
@@ -6,7 +7,6 @@ import { GlobalHttpExceptionFilter } from './common/filters/http-exception.filte
 import { Logger } from 'nestjs-pino';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { json } from 'express';
@@ -39,6 +39,12 @@ async function bootstrap() {
 	// Global logging & global error shape
 	app.useGlobalInterceptors(app.get(LoggingInterceptor));
 	app.useGlobalFilters(app.get(GlobalHttpExceptionFilter));
+
+	app.setGlobalPrefix('api', {});
+	app.enableVersioning({
+		type: VersioningType.URI,
+		defaultVersion: '1',
+	});
 
 	// Swagger config
 	const config = new DocumentBuilder()

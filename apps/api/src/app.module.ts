@@ -1,26 +1,26 @@
-import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { LoggerModule } from 'nestjs-pino';
-import { AchievementModule } from './achievements/achievement.module';
-import { ApiKeyModule } from './api_keys/api_key.module';
+import { AchievementModule } from './achievements/achievements.module';
+import { ApiKeyModule } from './api_keys/api_keys.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { JwtGuard } from './auth/guards/jwt.guard';
+import { ConfigModule } from '@nestjs/config';
+import { GameModule } from './games/games.module';
 import { GlobalHttpExceptionFilter } from './common/filters/http-exception.filter';
+import { JwtGuard } from './auth/guards/jwt.guard';
+import { LeaderboardEntryModule } from './leaderboard_entries/leaderboard_entries.module';
+import { LeaderboardModule } from './leaderboards/leaderboards.module';
+import { LoggerModule } from 'nestjs-pino';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
-import { GameModule } from './games/game.module';
-import { LeaderboardEntryModule } from './leaderboard_entry/leaderboard_entry.module';
-import { LeaderboardModule } from './leaderboards/leaderboard.module';
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Module } from '@nestjs/common';
+import { PlayerAchievementModule } from './player_achievements/player_achievements.module';
+import { PlayerModule } from './players/players.module';
+import { ScoreModule } from './scores/scores.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserAdminModule } from './users-admin/users-admin.module';
 import { dataSourceOptions } from 'db/datasource';
-import { PlayerAchievementModule } from './player_achievement/player_achievement.module';
-import { PlayerModule } from './players/player.module';
-import { ScoreModule } from './score/score.module';
-import { UserAdminModule } from './user-admin/user-admin.module';
 
 @Module({
 	imports: [

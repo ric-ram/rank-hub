@@ -7,7 +7,7 @@ import {
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import { Strategy } from 'passport-local';
-import { UserAdmin } from 'src/user-admin/entities/user-admin.entity';
+import { UserAdmin } from 'src/users-admin/entities/users-admin.entity';
 import { AuthService } from '../auth.service';
 
 /**
