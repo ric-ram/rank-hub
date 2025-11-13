@@ -32,19 +32,7 @@ import {
 } from './dto/login-admin.dto';
 import { RegisterAdminRequestDto } from './dto/register-admin.dto';
 import { CookieErrorInterceptor } from './interceptors/cookie-error.interceptor';
-
-/**
- * Request payload of an authenticated admin user
- *
- * @interface IAuthenticatedRequest
- * @typedef {IAuthenticatedRequest}
- * @extends {express.Request}
- */
-interface IAuthenticatedRequest extends express.Request {
-	adminId: string;
-	cookies: Record<string, any>;
-	signedCookies: Record<string, any>;
-}
+import type { IAuthenticatedRequest } from './types/AuthenticatedRequest';
 
 /**
  * Cookie name to store the refresh token

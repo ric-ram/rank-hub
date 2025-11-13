@@ -35,7 +35,7 @@ export class Games {
 		eager: false,
 	})
 	@JoinColumn({ name: 'created_by', referencedColumnName: 'id' })
-	createdBy: string;
+	createdBy: UserAdmin;
 
 	@CreateDateColumn({
 		name: 'created_at',
